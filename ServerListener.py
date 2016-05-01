@@ -15,11 +15,13 @@ def main():
 	last = ""
 	command = ""
 	isCommand = False
+	isUser = False
 	length = 0
 	BEGIN = "::"
 	END = "%%"
 	data = []
 	stmt = ""
+	userEmail = ""
 
 	serverConnection = ServerSQL.ConnectToSQL()
 
@@ -28,8 +30,6 @@ def main():
 		serverConnection = ServerSQL.ConnectToSQL()
 		c, addr = s.accept()
 		info = c.recv(500)
-		with open("log.txt", "w") as logFile:
-			logFile.write("2. Got connection from %s\n SENT INFO: %s" % (addr, info))
 		print ("2. Got connection from ", addr)
 		print ("SENT INFO: ",info)
 
@@ -38,37 +38,41 @@ def main():
 
 		'''
 		text parsing code
+		-----------------
+		This section looks for a command in the string of info sent to 
+		the server. The command is deliminated by "::" at the begining and
+		"%%" at the end. I
 		'''
 		for x in info:
 			if isCommand:
 				command += x
 			if x == last and x==':':
 				isCommand = True
-			elif x == last and x=='%':
+			elif x == '%' and x==last:
 				isCommand = False
+				isUser = True
 				command = command.rstrip('%')
+			if not isCommand and isUser and x != '%':
+				if x ==';':
+					isUser = False
+				else:
+					userEmail += x
 			if x == ';':
 				length += 1
 			last = x
 
 		toStrip = BEGIN + command + END
 		info = info.replace(toStrip,'')
+		toStrip = userEmail + ";"
+		info = info.replace(toStrip,'')
 
-		for i in range(length):
-			temp = ""
-			for x in info:
-				temp += x
-				if x == ';':
-					break
-			info = info.replace(temp,'')
-			temp = temp.rstrip(";")
-			data.append(temp)
-
+		data = info.split(";")
+		
 		'''
 		end text parse
 		'''
 		
-		print ("Command: ", command)
+		print "Command: ", command
 
 		if not command:
 			stmt = "error - No command"
@@ -79,15 +83,29 @@ def main():
 			c.close()
 			sys.exit(0)
 		elif command == "adduser":
-			serverConnection.addUser(data)
-			stmt = "User Added!"
-		'''
-		elif command == "retrieveUser":
-			some code here
+			if not serverConnection.doesItExist(userEmail):
+				serverConnection.addUser(userEmail, data)
+				stmt = "User Added!"
+			else:
+				stmt = "User Already Exists"
+		elif command == "updateresume":
+			serverConnection.updateUserResume(userEmail, data)
+			stmt = "Resume Updated!"
+		elif command == "getinfo":
+			stmt = serverConnection.getUser(userEmail)
+		elif command == "login":
+			if serverConnection.doesItExist(userEmail):
+				if serverConnection.checkPassword(data):
+					stmt = "success"
+				else:
+					stmt = "wrongpassword"
+			else:
+				stmt = "wrongemail"
 
-		'''
+
 		end = "\r\n"
 		stmt = stmt + end
+		print stmt
 		c.send(stmt)
 		c.close()
 

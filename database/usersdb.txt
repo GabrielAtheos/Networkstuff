@@ -1,7 +1,6 @@
 users database structure:
 
-	Identifier			- Integer
-	Name				- Text
+	UserEmail			- Text
 	Password			- Text
 	First_Name			- Text
 	Last_Name			- Text
