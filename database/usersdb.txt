@@ -1,0 +1,13 @@
+users database structure:
+
+	Identifier			- Integer
+	Name				- Text
+	Password			- Text
+	First_Name			- Text
+	Last_Name			- Text
+	Email				- Text
+	Phone				- Text
+	School_Name			- Text
+	Major				- Text
+	Company_Name		- Text
+	Company_Position	- Text
