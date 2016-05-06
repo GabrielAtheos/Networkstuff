@@ -20,8 +20,8 @@ class ConnectToSQL:
 			return row[0]
 
 	def addUser (self, email, password):
-		conn.execute("INSERT INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % 
-					(email,password,"","","","","","",""))
+		conn.execute("INSERT INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % 
+					(email,password,"","","","","","","",""))
 		conn.commit()
 
 	def updateUserResume(self,email, d):
