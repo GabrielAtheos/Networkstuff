@@ -99,7 +99,10 @@ def main():
 			serverConnection.updateUserResume(userEmail, data)
 			stmt = "Resume Updated!"
 		elif command == "getinfo":
-			stmt = serverConnection.getUser(userEmail)
+			if serverConnection.doesItExist(userEmail):
+				stmt = serverConnection.getUser(userEmail)
+			else:
+				stmt = "User doesn't exist"
 		elif command == "login":
 			if serverConnection.doesItExist(userEmail):
 				if serverConnection.checkPassword(userEmail, data):
