@@ -71,7 +71,9 @@ def main():
 
 		data = info.split(";")
 		
-		
+		for x in data:
+			print x
+		print userEmail
 		
 		'''
 		end text parse
@@ -100,12 +102,14 @@ def main():
 			stmt = serverConnection.getUser(userEmail)
 		elif command == "login":
 			if serverConnection.doesItExist(userEmail):
-				if serverConnection.checkPassword(data):
+				if serverConnection.checkPassword(userEmail, data):
 					stmt = "success"
 				else:
 					stmt = "wrongpassword"
 			else:
 				stmt = "wrongemail"
+
+		userEmail = ""
 
 
 		end = "\r\n"
