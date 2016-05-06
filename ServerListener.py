@@ -33,15 +33,18 @@ def main():
 		print ("2. Got connection from ", addr)
 		print ("SENT INFO: ",info)
 
-		info = info.rstrip('\r\n !#$^&*()_+-=][/,{}?><')
+		info = info.rstrip('\r\n !#$^&*()_+-=][/,{}?><') #sql sanitation
 		info = info.lower()
 
 		'''
-		text parsing code
-		-----------------
+		Command & Login parser
+		----------------------
 		This section looks for a command in the string of info sent to 
 		the server. The command is deliminated by "::" at the begining and
-		"%%" at the end. I
+		"%%" at the end. Immediately following the command will be the
+		user's login email address. This section of code locates and extracts
+		both items and sends the rest of the user data on to be processed
+		and handled as needed.
 		'''
 		for x in info:
 			if isCommand:
