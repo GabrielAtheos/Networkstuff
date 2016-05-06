@@ -5,12 +5,12 @@ conn = sqlite3.connect('database/users.db')
 class ConnectToSQL:
 
 	def recieveName(self, var1):
-		cursor = conn.execute("SELECT name FROM users WHERE userEmail = '%s' ;" % var1)
+		cursor = conn.execute("SELECT name FROM users WHERE userEmail = '%s';" % var1)
 		for row in cursor:
 			return row[0]
 
 	def recievePassword(self, var1):
-		cursor = conn.execute("SELECT password FROM users WHERE userEmail = '%s' ;" % var1)
+		cursor = conn.execute("SELECT password FROM users WHERE userEmail = '%s';" % var1)
 		for row in cursor:
 			return row[0]
 	
@@ -20,8 +20,7 @@ class ConnectToSQL:
 			return row[0]
 
 	def addUser (self, email, password):
-		conn.execute("INSERT INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % 
-					(email,password,"","","","","","","",""))
+		conn.execute("INSERT INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (email,password[0],"","","","","","","",""))
 		conn.commit()
 
 	def updateUserResume(self,email, d):
@@ -31,7 +30,7 @@ class ConnectToSQL:
 		conn.commit()
 
 	def getUser(self, email):
-		cursor = conn.execute("SELECT * FROM users WHERE userEmail = '%s'" %email)
+		cursor = conn.execute("SELECT * FROM users WHERE userEmail = '%s';" %email)
 		data = ";"
 		for row in cursor:
 			data = data.join(row)
@@ -41,8 +40,12 @@ class ConnectToSQL:
 		data = data.replace(toStrip,'')
 		return data
 
+	def deleteUser(self,email):
+		conn.execute("DELETE FROM users WHERE userEmail = '%s';" % email)
+		conn.commit()
+
 	def doesItExist(self, var1):
-		cursor = conn.execute("SELECT * FROM users WHERE userEmail = '%s'" % var1)
+		cursor = conn.execute("SELECT * FROM users WHERE userEmail = '%s';" % var1)
 		value = -1
 		for row in cursor:
 			value = row[0]

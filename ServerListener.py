@@ -70,6 +70,9 @@ def main():
 		info = info.replace(toStrip,'')
 
 		data = info.split(";")
+		
+		
+		
 		'''
 		end text parse
 		'''
