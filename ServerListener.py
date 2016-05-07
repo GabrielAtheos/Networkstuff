@@ -4,6 +4,8 @@ import sys
 import socket
 import ServerSQL
 
+from time import gmtime, strftime
+
 def main():
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	host = socket.gethostname()
@@ -23,8 +25,6 @@ def main():
 	stmt = ""
 	userEmail = ""
 
-	serverConnection = ServerSQL.ConnectToSQL()
-
 	while True:	
 		command = ""
 		serverConnection = ServerSQL.ConnectToSQL()
@@ -32,8 +32,9 @@ def main():
 		info = c.recv(500)
 		print ("2. Got connection from ", addr)
 		print ("SENT INFO: ",info)
+		print strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-		info = info.rstrip('\r\n !#$^&*()_+-=][/,{}?><') #sql sanitation
+		info = info.rstrip('\r\n !#$^&*()+-=][/,{}?><') #sql sanitation
 		info = info.lower()
 
 		'''
@@ -111,8 +112,13 @@ def main():
 					stmt = "wrongpassword"
 			else:
 				stmt = "wrongemail"
+		elif command == "is_authorized_user":
+			
 
 		userEmail = ""
+		command = ""
+		info = ""
+		data = None
 
 
 		end = "\r\n"
