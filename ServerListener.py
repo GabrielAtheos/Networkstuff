@@ -112,8 +112,12 @@ def main():
 					stmt = "wrongpassword"
 			else:
 				stmt = "wrongemail"
-		elif command == "is_authorized_user":
-			
+		elif command == "get_other_resume":
+			if serverConnection.isUserAuthorized(userEmail, data[0]) and 
+					serverConnection.doesItExist(userEmail):
+				stmt = serverConnection.getUser(data[0])
+			else:
+				stmt = "notauthorized"
 
 		userEmail = ""
 		command = ""

@@ -10,3 +10,4 @@ users database structure:
 	Major				- Text
 	Company_Name		- Text
 	Company_Position	- Text
+	Authorized_Users	- Text

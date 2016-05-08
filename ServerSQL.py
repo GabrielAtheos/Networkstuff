@@ -24,7 +24,6 @@ class ConnectToSQL:
 		conn.commit()
 
 	def updateUserResume(self,email, d):
-		print d
 		conn.execute("REPLACE INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % 
 					(email, self.recievePassword(email), d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7]))
 		conn.commit()
@@ -39,6 +38,18 @@ class ConnectToSQL:
 		toStrip = self.recievePassword(email) +";"
 		data = data.replace(toStrip,'')
 		return data
+
+	def isUserAuthorized(self, email, requestingEmail):
+		cursor = conn.execute("SELECT authorized_users FROM users WHERE useremail = '%s'" % email)
+		authorized = False
+		data = ";"
+		for row in cursor:
+			data = data.join(row)
+		data = data.split(";")
+		for x in data:
+			if x	 == requestingEmail:
+				authorized = True
+		return authorized
 
 	def deleteUser(self,email):
 		conn.execute("DELETE FROM users WHERE userEmail = '%s';" % email)
@@ -64,25 +75,3 @@ class ConnectToSQL:
 
 	def close(self):
 		conn.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
