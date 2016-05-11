@@ -20,16 +20,19 @@ class ConnectToSQL:
 			return row[0]
 
 	def addUser (self, email, password):
-		conn.execute("INSERT INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (email,password[0],"","","","","","","",""))
+		conn.execute("INSERT INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s');" % (email,password[0],"no","no","no","no","no","no","no","no",""))
 		conn.commit()
 
 	def updateUserResume(self,email, d):
-		conn.execute("REPLACE INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % 
-					(email, self.recievePassword(email), d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7]))
+		print "SQL: ", d
+		print "SQL: ", self.recievePassword(email)
+		print "SQL: ", self.getAuthorizedUsers(email)
+		conn.execute("REPLACE INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s');" % 
+					(email, self.recievePassword(email), d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],self.getAuthorizedUsers(email)))
 		conn.commit()
 
 	def getUser(self, email):
-		cursor = conn.execute("SELECT * FROM users WHERE userEmail = '%s';" %email)
+		cursor = conn.execute("SELECT first_name, last_name, email, phone, school_name, major, company_name, company_position FROM users WHERE userEmail = '%s';" %email)
 		data = ";"
 		for row in cursor:
 			data = data.join(row)
@@ -39,17 +42,42 @@ class ConnectToSQL:
 		data = data.replace(toStrip,'')
 		return data
 
+	def returnAll(self, email):
+		cursor = conn.execute("SELECT * FROM users WHERE useremail = '%s'; " % (email))
+		print "all:"
+		for row in cursor:
+			print row
+
 	def isUserAuthorized(self, email, requestingEmail):
-		cursor = conn.execute("SELECT authorized_users FROM users WHERE useremail = '%s'" % email)
+		cursor = conn.execute("SELECT authorized_users FROM users WHERE useremail = '%s';" % email)
 		authorized = False
 		data = ";"
 		for row in cursor:
 			data = data.join(row)
 		data = data.split(";")
 		for x in data:
-			if x	 == requestingEmail:
+			if x == requestingEmail:
 				authorized = True
 		return authorized
+
+	def addAuthorizedUser(self, email, authorizedEmail):
+		d = self.getUser(email)
+		d = d.split(";")
+		foo = self.getAuthorizedUsers(email)
+		foo += authorizedEmail + ";"
+		d.append(foo)
+		print "SQL: ", foo
+		print "SQL: ", d
+		print "SQL: ", self.recievePassword(email)
+		conn.execute("REPLACE INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s');" % 
+					(email, self.recievePassword(email), d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],d[8]))
+		conn.commit
+		self.close()
+
+	def getAuthorizedUsers(self, email):
+		cursor = conn.execute("SELECT authorized_users FROM users WHERE useremail = '%s';" % email)
+		for row in cursor:
+			return row[0]
 
 	def deleteUser(self,email):
 		conn.execute("DELETE FROM users WHERE userEmail = '%s';" % email)

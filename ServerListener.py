@@ -68,13 +68,20 @@ def main():
 		toStrip = BEGIN + command + END
 		info = info.replace(toStrip,'')
 		toStrip = userEmail + ";"
-		info = info.replace(toStrip,'')
+		info = info.replace(toStrip,'',1)
 
+		i = 0
 		data = info.split(";")
-		
+		data.remove(data[len(data)-1])
+		print "\nRecieved info: "
+		print "------------------"
 		for x in data:
-			print x
-		print userEmail
+			i = i + 1
+			print i,":",x
+
+		print "------------------"
+
+		print "User account: ", userEmail
 		
 		'''
 		end text parse
@@ -112,9 +119,14 @@ def main():
 					stmt = "wrongpassword"
 			else:
 				stmt = "wrongemail"
-		elif command == "get_other_resume":
-			if serverConnection.isUserAuthorized(userEmail, data[0]) and 
-					serverConnection.doesItExist(userEmail):
+		elif command == "addauthorizeduser":
+			if serverConnection.doesItExist(data[0]):
+				serverConnection.addAuthorizedUser(userEmail, data[0])
+				stmt = "success"
+			else:
+				stmt = "nouser"
+		elif command == "getlinked":
+			if serverConnection.isUserAuthorized(userEmail, data[0]):
 				stmt = serverConnection.getUser(data[0])
 			else:
 				stmt = "notauthorized"
@@ -127,9 +139,11 @@ def main():
 
 		end = "\r\n"
 		stmt = stmt + end
+		sys.stdout.write("\nReturned info: ")
 		print stmt
 		c.send(stmt)
 		c.close()
+		#serverConnection.close()
 
 if __name__ == '__main__':
 	main()
