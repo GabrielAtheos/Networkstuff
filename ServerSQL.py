@@ -24,9 +24,6 @@ class ConnectToSQL:
 		conn.commit()
 
 	def updateUserResume(self,email, d):
-		print "SQL: ", d
-		print "SQL: ", self.recievePassword(email)
-		print "SQL: ", self.getAuthorizedUsers(email)
 		conn.execute("REPLACE INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s');" % 
 					(email, self.recievePassword(email), d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],self.getAuthorizedUsers(email)))
 		conn.commit()
@@ -41,12 +38,6 @@ class ConnectToSQL:
 		toStrip = self.recievePassword(email) +";"
 		data = data.replace(toStrip,'')
 		return data
-
-	def returnAll(self, email):
-		cursor = conn.execute("SELECT * FROM users WHERE useremail = '%s'; " % (email))
-		print "all:"
-		for row in cursor:
-			print row
 
 	def isUserAuthorized(self, email, requestingEmail):
 		cursor = conn.execute("SELECT authorized_users FROM users WHERE useremail = '%s';" % email)
@@ -65,14 +56,9 @@ class ConnectToSQL:
 		d = d.split(";")
 		foo = self.getAuthorizedUsers(email)
 		foo += authorizedEmail + ";"
-		d.append(foo)
-		print "SQL: ", foo
-		print "SQL: ", d
-		print "SQL: ", self.recievePassword(email)
 		conn.execute("REPLACE INTO users VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s');" % 
-					(email, self.recievePassword(email), d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],d[8]))
-		conn.commit
-		self.close()
+					(email, self.recievePassword(email), d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],foo))
+		conn.commit()
 
 	def getAuthorizedUsers(self, email):
 		cursor = conn.execute("SELECT authorized_users FROM users WHERE useremail = '%s';" % email)

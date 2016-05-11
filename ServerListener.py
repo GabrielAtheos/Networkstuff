@@ -143,7 +143,6 @@ def main():
 		print stmt
 		c.send(stmt)
 		c.close()
-		#serverConnection.close()
 
 if __name__ == '__main__':
 	main()
