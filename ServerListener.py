@@ -126,7 +126,7 @@ def main():
 			else:
 				stmt = "nouser"
 		elif command == "getlinked":
-			if serverConnection.isUserAuthorized(userEmail, data[0]):
+			if serverConnection.isUserAuthorized(data[0], userEmail):
 				stmt = serverConnection.getUser(data[0])
 			else:
 				stmt = "notauthorized"

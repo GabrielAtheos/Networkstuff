@@ -45,9 +45,12 @@ class ConnectToSQL:
 		data = ";"
 		for row in cursor:
 			data = data.join(row)
+		print "SQL: ", data
 		data = data.split(";")
+		print "SQL: ", data
 		for x in data:
 			if x == requestingEmail:
+				print "X: ", x
 				authorized = True
 		return authorized
 
